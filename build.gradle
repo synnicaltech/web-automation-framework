@@ -1,0 +1,59 @@
+plugins{
+    id 'java'
+}
+
+group='com.automation'
+version='1.0.0'
+
+java {
+    toolchain{
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.47.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:6.1.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:6.1.3'
+    testImplementation 'org.junit.platform:junit-platform-launcher:6.1.3'
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "started","passed","failed","skipped","standardOut"
+        exceptionFormat="full"
+        showCauses=true
+        showStackTraces=true
+        showExceptions=true
+    }
+
+    reports {
+        html.required=true
+        junitXml.required=true
+    }
+}
+
+def registerTask = { taskName, tag ->
+    tasks.register(taskName, Test){
+        group="custom"
+        description = "running ${tag} task"
+
+        testClassesDirs = sourceSets.test.output.classesDirs
+        classpath = sourceSets.test.runtimeClasspath
+
+        test{
+            useJUnitPlatform()
+        }
+
+        testLogging {
+            events "started","failed","skipped"
+        }
+    }
+}
+
