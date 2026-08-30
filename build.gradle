@@ -25,35 +25,6 @@ dependencies {
 test {
     useJUnitPlatform()
 
-    testLogging {
-        events "started","passed","failed","skipped","standardOut"
-        exceptionFormat="full"
-        showCauses=true
-        showStackTraces=true
-        showExceptions=true
-    }
-
-    reports {
-        html.required=true
-        junitXml.required=true
-    }
+    systemProperty 'browser', System.getProperty('browser', 'chrome')
+    systemProperty 'headless', System.getProperty('headless', 'false')
 }
-
-def registerTask = { taskName, tag ->
-    tasks.register(taskName, Test){
-        group="custom"
-        description = "running ${tag} task"
-
-        testClassesDirs = sourceSets.test.output.classesDirs
-        classpath = sourceSets.test.runtimeClasspath
-
-        test{
-            useJUnitPlatform()
-        }
-
-        testLogging {
-            events "started","failed","skipped"
-        }
-    }
-}
-
